@@ -98,18 +98,3 @@ def getBlogDetails(request, blog_id):
         blogs= Blogs.objects.filter(id = blog_id)
         serializer = BlogsSerializer(blogs, many=True)
         return Response(serializer.data)
-
-
-@api_view(['GET'])
-def get_services(request):
-    if request.method == "GET":
-        service = Service.objects.all()
-        serializer = ServiceSerializer(service, many=True)
-        return Response(serializer.data)
-
-@api_view(['GET'])
-def getServiceDetails(request, service_id):
-    if request.method == "GET":
-        services= Service.objects.filter(id = service_id)
-        serializer = ServiceSerializer(services, many=True)
-        return Response(serializer.data)

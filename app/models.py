@@ -45,13 +45,3 @@ class Blogs(models.Model):
 
     def __str__(self):
         return self.heading
-
-class Service(models.Model):
-    image = ImageField( manual_crop="")
-    name = models.CharField(max_length=100, blank=False)
-    paragrapagh1 = models.TextField(max_length=1000, blank=False, null=True)
-    paragrapagh2 = models.TextField(max_length=1000, blank=True, null=True)
-    paragrapagh3 = models.TextField(max_length=1000, blank=True, null=True)
-
-    def __str__(self):
-        return self.name

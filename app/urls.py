@@ -10,6 +10,4 @@ urlpatterns = [
     path('getProductDetails/<int:product_id>/', views.getProductDetails, name='getProductDetails' ),
     path('api_categoryproducts/<int:category_id>/', views.getProductsByCategory, name='apiCategoryproducts' ),
     path('getBlogDetails/<int:blog_id>/', views.getBlogDetails, name='Blog Details' ),
-    path('get_services/', views.get_services, name='services'),
-    path('getServiceDetails/<int:service_id>/', views.getServiceDetails, name='Service Details' ),
 ]
