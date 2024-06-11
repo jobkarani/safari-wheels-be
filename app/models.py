@@ -24,8 +24,10 @@ class Product(models.Model):
     image2 = ImageField(blank=True, null=True, manual_crop="")
     image3 = ImageField(blank=True,null=True, manual_crop="")
     description = models.TextField(max_length=4000)
-    new_price = models.FloatField()
-    old_price = models.FloatField()
+    location = models.TextField(max_length=255, default='default_location')
+    no_of_persons = models.IntegerField()
+    transmission = models.TextField(max_length=4000) # automatic or manual 
+    price = models.FloatField()
     is_available = models.BooleanField(default = True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 

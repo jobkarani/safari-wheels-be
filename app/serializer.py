@@ -7,7 +7,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category_id = serializers.IntegerField(source='category.id')
     class Meta:
         model = Product
-        fields = ['id', 'name', 'slug', 'image', 'image2', 'image3', 'description','new_price', 'old_price', 'is_available','category_name','category_slug','category_id']
+        fields = ['id', 'name', 'slug', 'image', 'image2', 'image3', 'description','location', 'no_of_persons', 'transmission', 'price', 'is_available','category_name','category_slug','category_id']
 
 class CategorySerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)

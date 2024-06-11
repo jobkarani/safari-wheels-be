@@ -94,9 +94,9 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.postgresql'),
         'NAME':'railway',
         'USER':'postgres',
-        'PASSWORD':'qXeiBjiChBIyDLhlaeztPSUSoyZfUvZV',
-        'HOST': 'roundhouse.proxy.rlwy.net',
-        'PORT': '16492',
+        'PASSWORD':'WIOTvnLUWEONXZFSeINxQVtXTVelJemE',
+        'HOST': 'monorail.proxy.rlwy.net',
+        'PORT': '44670',
     }
 }
 
