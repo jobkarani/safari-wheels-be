@@ -4,14 +4,14 @@ from app.models import *
 
 # Register your models here.
 
-class CategoryAdmin(admin.ModelAdmin):
+class Modeladmin(admin.ModelAdmin):
     list_display = ('name','slug')
     prepopulated_fields = {'slug': ('name',)}
 
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'price','category', 'is_available')
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'price','model', 'is_available')
     prepopulated_fields = {'slug': ('name',)}
 
-admin.site.register(Product, ProductAdmin )
-admin.site.register(Category, CategoryAdmin)
+admin.site.register(Car, CarAdmin )
+admin.site.register(Model, Modeladmin)
 admin.site.register(Blogs)

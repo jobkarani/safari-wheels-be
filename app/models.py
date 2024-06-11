@@ -3,21 +3,21 @@ from django.urls import reverse
 from pyuploadcare.dj.models import ImageField
 # Create your models here.
 
-class Category(models.Model):
+class Model(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:
-        verbose_name = 'category'
-        verbose_name_plural = 'categories'
+        verbose_name = 'model'
+        verbose_name_plural = 'models'
 
     def get_url(self):
-        return reverse('products_by_category', args=[self.slug])
+        return reverse('cars_by_model', args=[self.slug])
 
     def __str__(self):
         return self.name
 
-class Product(models.Model):
+class Car(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     image = ImageField( manual_crop="")
@@ -29,7 +29,7 @@ class Product(models.Model):
     transmission = models.TextField(max_length=4000) # automatic or manual 
     price = models.FloatField()
     is_available = models.BooleanField(default = True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    model = models.ForeignKey(Model, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('name',)

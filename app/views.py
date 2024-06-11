@@ -25,20 +25,20 @@ def send_mail(request):
         )
     return form_data
 
-def productsPage(request, category_slug=None):
-    categories = None
-    products = None
-    if category_slug != None:
-        categories = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(category=categories, is_available=True)
-        product_count = products.count()
+def carsPage(request, model_slug=None):
+    models = None
+    cars = None
+    if model_slug != None:
+        models = get_object_or_404(Model, slug=model_slug)
+        cars = Car.objects.filter(model=models, is_available=True)
+        car_count = cars.count()
     else:
-        products = Product.objects.all().filter(is_available=True)
-        product_count = products.count()
+        cars = Car.objects.all().filter(is_available=True)
+        car_count = cars.count()
     context = {
-        'categories':categories,
-        'products':products,
-        'product_count':product_count,
+        'models':models,
+        'cars':cars,
+        'car_count':car_count,
     }
     return render(request, 'products.html', context)
 
@@ -48,41 +48,41 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 1000
 
 @api_view(['GET',])
-def api_products(request):
+def api_cars(request):
     if request.method == "GET":
-        products = Product.objects.all()
+        cars = Car.objects.all()
 
         # Set up pagination
         paginator = PageNumberPagination()
         paginator.page_size = 300
-        result_page = paginator.paginate_queryset(products, request)
+        result_page = paginator.paginate_queryset(cars, request)
 
         # Serialize the result page
-        serializer = ProductSerializer(result_page, many=True)
+        serializer = CarSerializer(result_page, many=True)
         return Response(serializer.data)
 
 @api_view(['GET',])
-def api_categories(request):
+def api_models(request):
     if request.method == "GET":
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
+        models = Model.objects.all()
+        serializer = ModelSerializer(models, many=True)
         return Response(serializer.data)
 
 
 @api_view(['GET'])
-def getProductDetails(request, product_id):
+def getCarDetails(request, car_id):
     if request.method == "GET":
-        product= Product.objects.filter(id = product_id)
-        serializer = ProductSerializer(product, many=True)
+        car= Car.objects.filter(id = car_id)
+        serializer = CarSerializer(car, many=True)
         return Response(serializer.data)
 
 
 @api_view(['GET'])
-def getProductsByCategory(request, category_id):
+def getCarsByModel(request, model_id):
     if request.method == "GET":
-        category = get_object_or_404(Category, id=category_id)
-        products = Product.objects.filter(category=category)
-        serializer = ProductSerializer(products, many=True)
+        model = get_object_or_404(Model, id=model_id)
+        cars = Car.objects.filter(model=model)
+        serializer = CarSerializer(cars, many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
