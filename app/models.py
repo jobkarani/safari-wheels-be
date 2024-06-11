@@ -3,16 +3,16 @@ from django.urls import reverse
 from pyuploadcare.dj.models import ImageField
 # Create your models here.
 
-class Model(models.Model):
+class Brand(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:
-        verbose_name = 'model'
-        verbose_name_plural = 'models'
+        verbose_name = 'brand'
+        verbose_name_plural = 'brands'
 
     def get_url(self):
-        return reverse('cars_by_model', args=[self.slug])
+        return reverse('cars_by_brand', args=[self.slug])
 
     def __str__(self):
         return self.name
@@ -29,7 +29,7 @@ class Car(models.Model):
     transmission = models.TextField(max_length=4000) # automatic or manual 
     price = models.FloatField()
     is_available = models.BooleanField(default = True)
-    model = models.ForeignKey(Model, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('name',)

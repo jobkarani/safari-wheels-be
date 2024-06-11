@@ -2,17 +2,17 @@ from rest_framework import serializers
 from .models import *
 
 class CarSerializer(serializers.ModelSerializer):
-    model_name = serializers.CharField(source='model.name')
-    model_slug = serializers.CharField(source='model.slug')
-    model_id = serializers.IntegerField(source='model.id')
+    brand_name = serializers.CharField(source='brand.name')
+    brand_slug = serializers.CharField(source='brand.slug')
+    brand_id = serializers.IntegerField(source='brand.id')
     class Meta:
         model = Car
-        fields = ['id', 'name', 'slug', 'image', 'image2', 'image3', 'description','location', 'no_of_persons', 'transmission', 'price', 'is_available','model_name','model_slug','model_id']
+        fields = ['id', 'name', 'slug', 'image', 'image2', 'image3', 'description','location', 'no_of_persons', 'transmission', 'price', 'is_available','brand_name','brand_slug','brand_id']
 
-class ModelSerializer(serializers.ModelSerializer):
+class BrandSerializer(serializers.ModelSerializer):
     cars = CarSerializer(many=True, read_only=True)
     class Meta:
-        model = Model
+        model = Brand
         fields = ['id', 'name', 'slug', 'cars']
 
 class BlogsSerializer(serializers.ModelSerializer):

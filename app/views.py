@@ -25,18 +25,18 @@ def send_mail(request):
         )
     return form_data
 
-def carsPage(request, model_slug=None):
-    models = None
+def carsPage(request, brand_slug=None):
+    brands = None
     cars = None
-    if model_slug != None:
-        models = get_object_or_404(Model, slug=model_slug)
-        cars = Car.objects.filter(model=models, is_available=True)
+    if brand_slug != None:
+        brands = get_object_or_404(Brand, slug=brand_slug)
+        cars = Car.objects.filter(brand=brands, is_available=True)
         car_count = cars.count()
     else:
         cars = Car.objects.all().filter(is_available=True)
         car_count = cars.count()
     context = {
-        'models':models,
+        'brands':brands,
         'cars':cars,
         'car_count':car_count,
     }
@@ -62,10 +62,10 @@ def api_cars(request):
         return Response(serializer.data)
 
 @api_view(['GET',])
-def api_models(request):
+def api_brands(request):
     if request.method == "GET":
-        models = Model.objects.all()
-        serializer = ModelSerializer(models, many=True)
+        brands = Brand.objects.all()
+        serializer = BrandSerializer(brands, many=True)
         return Response(serializer.data)
 
 
@@ -78,10 +78,10 @@ def getCarDetails(request, car_id):
 
 
 @api_view(['GET'])
-def getCarsByModel(request, model_id):
+def getCarsByBrand(request, brand_id):
     if request.method == "GET":
-        model = get_object_or_404(Model, id=model_id)
-        cars = Car.objects.filter(model=model)
+        brand = get_object_or_404(Brand, id=brand_id)
+        cars = Car.objects.filter(brand=brand)
         serializer = CarSerializer(cars, many=True)
         return Response(serializer.data)
 
