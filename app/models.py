@@ -4,6 +4,26 @@ from django.contrib.auth.models import User
 from pyuploadcare.dj.models import ImageField
 # Create your models here.
 
+CATEGORY_CHOICES = (
+    ('Private-hire', 'Car Owner'),
+    ('Construction-hire', 'Mechanic/Garage'),
+    ('Transport-hire', 'Spare Parts Retailer'),
+    ('Agricultural-hire', 'Spare Parts Retailer'),
+)
+MODEL_CHOICES = (
+    ('Toyota', 'Toyota'),
+    ('Nissan', 'Nissan'),
+    ('Subaru', 'Subaru'),
+    ('Mitsubishi', 'Mitsubishi'),
+    ('Mercedes', 'Mercedes Benz'),
+    ('BMW', 'BMW'),
+    ('Audi', 'Audi'),
+    ('Volkswagen', 'Volkswagen'),
+    ('Honda', 'Honda'),
+    ('Land Rover', 'Land Rover'),
+    ('Ford', 'Ford'),
+)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     location = models.CharField(max_length=30)

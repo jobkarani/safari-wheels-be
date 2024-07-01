@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'localhost']
 
 # redirect urls
 LOGIN_REDIRECT_URL = '/'
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     "rest_framework", 
     'cloudinary', 
     'simple_mail', 
+    'drf_yasg',
+    'rest_framework.authtoken', 
 ]
 
 MIDDLEWARE = [
@@ -141,6 +143,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     # 'PAGE_SIZE': 12
 }
 
