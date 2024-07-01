@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, re_path
 from app import views
 
 urlpatterns = [
+    re_path('login', views.login),
+    re_path('signup', views.signup),
+    re_path('test_token', views.test_token),
+    re_path('saveProfile', views.saveProfile),
     path('', views.carsPage, name='carsPage'),
     path('emails/', views.send_mail, name='email'),
     path('get_blogs/', views.get_blogs, name='blogs'),

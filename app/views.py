@@ -1,18 +1,79 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view, authentication_classes,permission_classes
 from django.shortcuts import get_object_or_404, render
-from django.db.models import Q
-# from simple_mail.mail import send_mail
 
 from app.models import *
 from .serializer import *
 from .pagination import *
-from rest_framework import generics
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.pagination import PageNumberPagination
 # Create your views here.
+
+
+@api_view(['POST'])
+def login(request):
+    user = get_object_or_404(User, email = request.data['email'])
+    if not user.check_password(request.data['password']):
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+    token , created = Token.objects.get_or_create(user=user)
+    serializer = UserSerializer(instance=user)
+    return Response({"token": token.key, "user": serializer.data})
+
+@api_view(['POST'])
+def signup(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        user = User.objects.get(username=request.data['username'])
+        user.set_password(request.data['password'])
+        user.save()
+        token = Token.objects.create(user=user)
+        return Response({"token": token.key, "user": serializer.data})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def test_token(request):
+    return Response("passed for {}".format(request.user.email))
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def saveProfile(request):
+    user = request.user
+    try:
+        # Try to get the existing Profile record for the authenticated user
+        profile = Profile.objects.get(user=user)
+        serializer = ProfileSerializer(profile, data=request.data)
+    except Profile.DoesNotExist:
+        # If no Profile record exists, create a new one
+        serializer = ProfileSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save(user=user)  # Associate the user with the Profile record
+        return Response({"profile": serializer.data})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class ProfileListAPIView(APIView):
+    def post(self, request):
+        queryset = Profile.objects.all()
+
+        # Filter queryset based on query parameters
+        for key, value in request.data.items():
+            kwargs = {f'{key}__icontains': value}  # Case-insensitive partial match
+            queryset = queryset.filter(**kwargs)
+
+        serializer = ProfileSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 def send_mail(request):
     if request.method == 'POST':

@@ -1,7 +1,17 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 from pyuploadcare.dj.models import ImageField
 # Create your models here.
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    location = models.CharField(max_length=30)
+    phoneNumber = models.CharField(max_length=10)
+
+    def __str__(self):
+        return "{} {} {} from {}".format(
+            self.location, self.phoneNumber)    
 
 class Brand(models.Model):
     name = models.CharField(max_length=200, unique=True)
