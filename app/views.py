@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render
 
 from app.models import *
 from .serializer import *
-from .pagination import *
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
@@ -75,87 +74,43 @@ class ProfileListAPIView(APIView):
         serializer = ProfileSerializer(queryset, many=True)
         return Response(serializer.data)
 
-def send_mail(request):
-    if request.method == 'POST':
-        form_data = request.POST
-        send_mail(
-        'Form submission',
-        f'You received a new submission with the following data:\n{form_data}',
-        'sender@example.com',
-        ['recipient@example.com'],
-        )
-    return form_data
 
-def carsPage(request, brand_slug=None):
-    brands = None
-    cars = None
-    if brand_slug != None:
-        brands = get_object_or_404(Brand, slug=brand_slug)
-        cars = Car.objects.filter(brand=brands, is_available=True)
-        car_count = cars.count()
-    else:
-        cars = Car.objects.all().filter(is_available=True)
-        car_count = cars.count()
-    context = {
-        'brands':brands,
-        'cars':cars,
-        'car_count':car_count,
-    }
-    return render(request, 'products.html', context)
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 100
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
-
-@api_view(['GET',])
-def api_cars(request):
-    if request.method == "GET":
-        cars = Car.objects.all()
-
-        # Set up pagination
-        paginator = PageNumberPagination()
-        paginator.page_size = 300
-        result_page = paginator.paginate_queryset(cars, request)
-
-        # Serialize the result page
-        serializer = CarSerializer(result_page, many=True)
-        return Response(serializer.data)
-
-@api_view(['GET',])
-def api_brands(request):
-    if request.method == "GET":
-        brands = Brand.objects.all()
-        serializer = BrandSerializer(brands, many=True)
-        return Response(serializer.data)
+@api_view(['GET'])
+def list_all_cars(request):
+    cars = Car.objects.all()
+    serializer = CarSerializer(cars, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
-def getCarDetails(request, car_id):
+def list_cars_by_category(request, category):
+    cars = Car.objects.filter(category=category)
+    if cars.exists():
+        serializer = CarSerializer(cars, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({"error": "No cars found in this category"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def car_details(request, car_id):
     if request.method == "GET":
         car= Car.objects.filter(id = car_id)
         serializer = CarSerializer(car, many=True)
         return Response(serializer.data)
+    else:
+        return Response({"error": "Car not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET'])
-def getCarsByBrand(request, brand_id):
-    if request.method == "GET":
-        brand = get_object_or_404(Brand, id=brand_id)
-        cars = Car.objects.filter(brand=brand)
-        serializer = CarSerializer(cars, many=True)
-        return Response(serializer.data)
-
-@api_view(['GET'])
-def get_blogs(request):
-    if request.method == "GET":
-        blogs = Blogs.objects.all()
-        serializer = BlogsSerializer(blogs, many=True)
-        return Response(serializer.data)
+@api_view(['POST'])
+def post_car(request):
+    if request.method == 'POST':
+        serializer = CarSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def getBlogDetails(request, blog_id):
-    if request.method == "GET":
-        blogs= Blogs.objects.filter(id = blog_id)
-        serializer = BlogsSerializer(blogs, many=True)
-        return Response(serializer.data)
+def list_categories(request):
+    categories = {key: value for key, value in CATEGORY_CHOICES}
+    return Response(categories)
