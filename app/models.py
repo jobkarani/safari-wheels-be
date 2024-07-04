@@ -5,10 +5,10 @@ from pyuploadcare.dj.models import ImageField
 # Create your models here.
 
 CATEGORY_CHOICES = (
-    ('Private-hire', 'Car Owner'),
-    ('Construction-hire', 'Mechanic/Garage'),
-    ('Transport-hire', 'Spare Parts Retailer'),
-    ('Agricultural-hire', 'Spare Parts Retailer'),
+    ('Private-hire', 'Private-hire'),
+    ('Construction-hire', 'Construction-hire'),
+    ('Transport-hire', 'Transport-hire'),
+    ('Agricultural-hire', 'Agricultural-hire'),
     ('Airport Transfer', 'Airport Transfer')
 )
 
