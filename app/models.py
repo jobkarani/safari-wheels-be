@@ -30,13 +30,12 @@ class Car(models.Model):
     name = models.CharField(max_length=200, unique=True)
     image = ImageField( manual_crop="")
     description = models.TextField(max_length=4000)
-    location = models.TextField(max_length=255, default='default_location')
+    location = models.TextField(max_length=255, default='Nairobi')
     no_of_persons = models.IntegerField()
     transmission = models.CharField(
         max_length=60, choices=TRANSMISSION_CHOICES, default="Automatic")
     price = models.FloatField()
     phone_number = models.CharField(max_length=10)
-    is_available = models.BooleanField(default = True)
     category = models.CharField(
         max_length=60, choices=CATEGORY_CHOICES, default="Private-hire")
 
