@@ -13,8 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import csv
 import os
 from pathlib import Path
-from decouple import config,Csv
+from decouple import config
 import dj_database_url
+from .jazmin import JAZZMIN_SETTINGS
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,6 +36,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'corsheaders',
     'tinymce',
     'crispy_forms',
@@ -143,10 +145,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.BasicAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    # ],
     # 'PAGE_SIZE': 12
 }
 
@@ -209,3 +211,5 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+JAZZMIN_SETTINGS = JAZZMIN_SETTINGS

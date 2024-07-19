@@ -1,5 +1,5 @@
 anyio==4.3.0
-asgiref==3.5.2
+asgiref==3.8.1
 cachetools==5.3.3
 certifi==2021.10.8
 cffi==1.16.0
@@ -10,11 +10,12 @@ cryptography==37.0.4
 cssselect==1.2.0
 cssutils==2.10.2
 dj-database-url==0.5.0
-Django==4.1.2
+Django==5.0.7
 django-appconf==1.0.6
 django-cors-headers==3.13.0
 django-crispy-forms==1.14.0
 django-imagekit==5.0.0
+django-jazzmin==3.0.0
 django-on-heroku==1.1.2
 django-registration==3.3
 django-simple-mail==2.3.5

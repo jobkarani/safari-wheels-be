@@ -19,12 +19,16 @@ TRANSMISSION_CHOICES = (
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    location = models.CharField(max_length=30)
-    phoneNumber = models.CharField(max_length=10)
+    full_names = models.CharField(max_length=100, null=True)
+    email = models.EmailField(unique=True, null=True)
+    phone_number = models.CharField(max_length=12, null=True)
+    id_number = models.CharField(max_length=20, null=True, unique=True)
+    id_front_image = ImageField(manual_crop="", null=True)
+    id_back_image = ImageField(manual_crop="", null=True)
+    location = models.CharField(max_length=30, null=True)
 
     def __str__(self):
-        return "{} {} {} from {}".format(
-            self.location, self.phoneNumber)    
+        return "{} - {} - {}".format(self.user.username, self.full_names, self.location)    
 
 class Car(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -44,3 +48,16 @@ class Car(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.IntegerField(default=1)  # Assuming rating out of 5
+    comment = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.user.username} - {self.car.name} - {self.rating}'
