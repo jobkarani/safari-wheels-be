@@ -46,16 +46,17 @@ def test_token(request):
 @permission_classes([IsAuthenticated])
 def saveProfile(request):
     user = request.user
+    print("Authenticated user:", user)
+    if not request.user.is_authenticated:
+        return Response({"detail": "User not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
     try:
-        # Try to get the existing Profile record for the authenticated user
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(profile, data=request.data)
     except Profile.DoesNotExist:
-        # If no Profile record exists, create a new one
         serializer = ProfileSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save(user=user)  # Associate the user with the Profile record
+        serializer.save(user=user)
         return Response({"profile": serializer.data})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

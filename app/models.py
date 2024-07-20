@@ -28,7 +28,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, null=True)
 
     def __str__(self):
-        return "{} - {} - {}".format(self.user.username, self.full_names, self.location)    
+        return "{} - {} - {}".format(self.user.username, self.full_names, self.location)   
 
 class Car(models.Model):
     name = models.CharField(max_length=200, unique=True)

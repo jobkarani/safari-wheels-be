@@ -4,15 +4,14 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta(object):
+    class Meta:
         model = User
         fields = ['id', 'email', 'username', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    class Meta(object):
+    class Meta:
         model = Profile
-        fields = ['user', 'full_names', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location']
+        fields = ['full_names', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location']
 
 class CarSerializer(serializers.ModelSerializer):
     class Meta:
