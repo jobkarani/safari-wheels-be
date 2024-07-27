@@ -63,45 +63,59 @@ def saveProfile(request):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def profile_detail(request, id):
+def profile_check(request):
+    user = request.user
+    if not user.is_authenticated:
+        return Response({"detail": "User not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+    
     try:
-        profile = Profile.objects.get(pk=id)
+        profile = Profile.objects.get(user=user)
+        return Response({"hasProfile": True}, status=status.HTTP_200_OK)
     except Profile.DoesNotExist:
-        return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"hasProfile": False}, status=status.HTTP_200_OK)
 
-    if request.method == 'GET':
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
+# @api_view(['GET'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def profile_detail(request, id):
+#     try:
+#         profile = Profile.objects.get(pk=id)
+#     except Profile.DoesNotExist:
+#         return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['PUT'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def update_profile(request, id):
-    try:
-        profile = Profile.objects.get(pk=id)
-    except Profile.DoesNotExist:
-        return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
+#     if request.method == 'GET':
+#         serializer = ProfileSerializer(profile)
+#         return Response(serializer.data)
 
-    if request.method == 'PUT':
-        serializer = ProfileSerializer(profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['PUT'])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# def update_profile(request, id):
+#     try:
+#         profile = Profile.objects.get(pk=id)
+#     except Profile.DoesNotExist:
+#         return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
 
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-class ProfileListAPIView(APIView):
-    def post(self, request):
-        queryset = Profile.objects.all()
+#     if request.method == 'PUT':
+#         serializer = ProfileSerializer(profile, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Filter queryset based on query parameters
-        for key, value in request.data.items():
-            kwargs = {f'{key}__icontains': value}  # Case-insensitive partial match
-            queryset = queryset.filter(**kwargs)
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# class ProfileListAPIView(APIView):
+#     def post(self, request):
+#         queryset = Profile.objects.all()
 
-        serializer = ProfileSerializer(queryset, many=True)
-        return Response(serializer.data)
+#         # Filter queryset based on query parameters
+#         for key, value in request.data.items():
+#             kwargs = {f'{key}__icontains': value}  # Case-insensitive partial match
+#             queryset = queryset.filter(**kwargs)
+
+#         serializer = ProfileSerializer(queryset, many=True)
+#         return Response(serializer.data)
 
 
 @api_view(['GET'])
