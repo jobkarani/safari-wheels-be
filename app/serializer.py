@@ -23,4 +23,4 @@ class ReviewSerializer(serializers.ModelSerializer):
     car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all())
     class Meta:
         model = Review
-        fields = ['id', 'user', 'car', 'rating', 'comment', 'created_at']
+        fields = ['id', 'user', 'car', 'rating', 'comment']

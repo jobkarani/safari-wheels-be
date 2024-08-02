@@ -54,10 +54,9 @@ class Review(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField(default=1)  # Assuming rating out of 5
     comment = models.TextField(max_length=2000)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['rating']
 
     def __str__(self):
         return f'{self.user.username} - {self.car.name} - {self.rating}'
