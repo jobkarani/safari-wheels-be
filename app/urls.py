@@ -35,6 +35,5 @@ urlpatterns = [
    path('api_categorycars/<str:category>/', views.list_cars_by_category, name='apicategorycars' ),
    path('car/<int:car_id>/reviews/', list_reviews, name='list_reviews'),
    path('review/', create_review, name='create_review'),
-   path('cars/<int:car_id>/reviews/', list_reviews, name='list_reviews'),
    path('review/<int:id>/', review_detail, name='review_detail'),
 ]
