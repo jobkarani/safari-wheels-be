@@ -159,7 +159,6 @@ def list_categories(request):
     return Response(categories)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def create_review(request):
     serializer = ReviewSerializer(data=request.data)
     if serializer.is_valid():
