@@ -39,7 +39,7 @@ class Car(models.Model):
     transmission = models.CharField(
         max_length=60, choices=TRANSMISSION_CHOICES, default="Automatic")
     price = models.FloatField()
-    phone_number = models.CharField(max_length=10)
+    phone_number = models.CharField(max_length=12)
     category = models.CharField(
         max_length=60, choices=CATEGORY_CHOICES, default="Private-hire")
 
