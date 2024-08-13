@@ -19,6 +19,11 @@ class CarSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'image', 'description','location', 'phone_number', 'no_of_persons', 'transmission', 'price', 'category']
 
 class ReviewSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Review
-        fields = ['id', 'user', 'car', 'rating', 'comment']
+        fields = ['id', 'user', 'car', 'rating', 'comment', 'username'] 
+
+    def get_username(self, obj):
+        return obj.user.username
