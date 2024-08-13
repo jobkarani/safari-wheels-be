@@ -208,3 +208,19 @@ def review_detail(request, id):
             return Response({'error': 'You can only delete your own review.'}, status=status.HTTP_403_FORBIDDEN)
         review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def search_cars(request):
+    name = request.query_params.get('name', None)
+    location = request.query_params.get('location', None)
+
+    cars = Car.objects.all()
+
+    if name:
+        cars = cars.filter(name__icontains=name)
+    
+    if location:
+        cars = cars.filter(location__icontains=location)
+
+    serializer = CarSerializer(cars, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
