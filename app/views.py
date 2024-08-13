@@ -1,15 +1,12 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view, authentication_classes,permission_classes
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 
 from app.models import *
 from .serializer import *
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.models import Token
-from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
@@ -50,19 +47,19 @@ def signup(request):
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):
-    return Response("passed for {}".format(request.user.email))
+    return Response(f"passed for {request.user.email}")
+
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def saveProfile(request):
     user = request.user
     print("Authenticated user:", user)
-    if not request.user.is_authenticated:
-        return Response({"detail": "User not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
     try:
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(profile, data=request.data)
@@ -75,13 +72,11 @@ def saveProfile(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def profile_check(request):
     user = request.user
-    if not user.is_authenticated:
-        return Response({"detail": "User not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
     try:
         profile = Profile.objects.get(user=user)
         return Response({"hasProfile": True}, status=status.HTTP_200_OK)
@@ -188,14 +183,17 @@ def list_reviews(request, car_id):
     serializer = ReviewSerializer(reviews, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET', 'PUT', 'DELETE'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def review_detail(request, id):
     review = get_object_or_404(Review, id=id)
+
     if request.method == 'GET':
         serializer = ReviewSerializer(review)
         return Response(serializer.data)
+    
     elif request.method == 'PUT':
         if review.user != request.user:
             return Response({'error': 'You can only edit your own review.'}, status=status.HTTP_403_FORBIDDEN)
@@ -204,6 +202,7 @@ def review_detail(request, id):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     elif request.method == 'DELETE':
         if review.user != request.user:
             return Response({'error': 'You can only delete your own review.'}, status=status.HTTP_403_FORBIDDEN)
