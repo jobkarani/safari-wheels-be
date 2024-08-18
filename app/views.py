@@ -80,6 +80,19 @@ def profile_check(request):
         return Response({"hasProfile": True}, status=status.HTTP_200_OK)
     except Profile.DoesNotExist:
         return Response({"hasProfile": False}, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def profile_detail(request, id):
+    try:
+        profile = Profile.objects.get(pk=id)
+    except Profile.DoesNotExist:
+        return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
 
 @api_view(['GET'])
 def list_all_cars(request):
