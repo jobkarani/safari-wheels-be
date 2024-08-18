@@ -58,8 +58,6 @@ def test_token(request):
 @permission_classes([IsAuthenticated])
 def saveProfile(request):
     user = request.user
-    print("Authenticated user:", user)
-
     try:
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(profile, data=request.data)
@@ -67,7 +65,7 @@ def saveProfile(request):
         serializer = ProfileSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save(user=user)
+        profile = serializer.save(user=user)
         return Response({"profile": serializer.data})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -82,50 +80,6 @@ def profile_check(request):
         return Response({"hasProfile": True}, status=status.HTTP_200_OK)
     except Profile.DoesNotExist:
         return Response({"hasProfile": False}, status=status.HTTP_200_OK)
-
-# @api_view(['GET'])
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def profile_detail(request, id):
-#     try:
-#         profile = Profile.objects.get(pk=id)
-#     except Profile.DoesNotExist:
-#         return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == 'GET':
-#         serializer = ProfileSerializer(profile)
-#         return Response(serializer.data)
-
-# @api_view(['PUT'])
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# def update_profile(request, id):
-#     try:
-#         profile = Profile.objects.get(pk=id)
-#     except Profile.DoesNotExist:
-#         return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == 'PUT':
-#         serializer = ProfileSerializer(profile, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-# class ProfileListAPIView(APIView):
-#     def post(self, request):
-#         queryset = Profile.objects.all()
-
-#         # Filter queryset based on query parameters
-#         for key, value in request.data.items():
-#             kwargs = {f'{key}__icontains': value}  # Case-insensitive partial match
-#             queryset = queryset.filter(**kwargs)
-
-#         serializer = ProfileSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
 
 @api_view(['GET'])
 def list_all_cars(request):
@@ -154,13 +108,18 @@ def car_details(request, car_id):
 
 
 @api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def post_car(request):
-    if request.method == 'POST':
-        serializer = CarSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    profile = request.user.profile 
+    if profile.user_type != 'Owner':
+        return Response({"error": "Only car owners can post cars."}, status=status.HTTP_403_FORBIDDEN)
+
+    serializer = CarSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(owner=profile)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def list_categories(request):
@@ -223,4 +182,4 @@ def search_cars(request):
         cars = cars.filter(location__icontains=location)
 
     serializer = CarSerializer(cars, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK) 

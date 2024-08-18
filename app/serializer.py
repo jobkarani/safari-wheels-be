@@ -11,12 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['full_names', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location']
+        fields = ['full_names', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location', 'user_type']
 
 class CarSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.user.username')  # Show owner's username in serialized data
+
     class Meta:
         model = Car
-        fields = ['id', 'name', 'image', 'description','location', 'phone_number', 'no_of_persons', 'transmission', 'price', 'category']
+        fields = ['id', 'name', 'image', 'description', 'location', 'phone_number', 'no_of_persons', 'transmission', 'price', 'category', 'owner']
 
 class ReviewSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()

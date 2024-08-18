@@ -18,6 +18,11 @@ TRANSMISSION_CHOICES = (
 )
 
 class Profile(models.Model):
+    USER_TYPE_CHOICES = (
+        ('Owner', 'Owner'),
+        ('Renter', 'Renter'),
+    )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_names = models.CharField(max_length=100, null=True)
     email = models.EmailField(unique=True, null=True)
@@ -26,22 +31,22 @@ class Profile(models.Model):
     id_front_image = ImageField(manual_crop="", null=True)
     id_back_image = ImageField(manual_crop="", null=True)
     location = models.CharField(max_length=30, null=True)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='Renter')
 
     def __str__(self):
-        return "{} - {} - {}".format(self.user.username, self.full_names, self.location)   
+        return "{} - {} - {} - {}".format(self.user.username, self.full_names, self.user_type, self.location)  
 
 class Car(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='cars', null=True)
     name = models.CharField(max_length=200, unique=True)
-    image = ImageField( manual_crop="")
+    image = ImageField(manual_crop="")
     description = models.TextField(max_length=4000)
     location = models.TextField(max_length=255, default='Nairobi')
     no_of_persons = models.IntegerField()
-    transmission = models.CharField(
-        max_length=60, choices=TRANSMISSION_CHOICES, default="Automatic")
+    transmission = models.CharField(max_length=60, choices=TRANSMISSION_CHOICES, default="Automatic")
     price = models.FloatField()
     phone_number = models.CharField(max_length=12)
-    category = models.CharField(
-        max_length=60, choices=CATEGORY_CHOICES, default="Private-hire")
+    category = models.CharField(max_length=60, choices=CATEGORY_CHOICES, default="Private-hire")
 
     class Meta:
         ordering = ('name',)
