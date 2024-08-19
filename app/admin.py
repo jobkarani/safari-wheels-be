@@ -8,7 +8,7 @@ class CarAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'price','category')
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'full_names', 'email', 'phone_number','id_number', 'location')
+    list_display = ('id', 'full_names', 'user', 'email', 'phone_number','id_number', 'location')
     
 admin.site.register(Car, CarAdmin )
 admin.site.register(Profile, ProfileAdmin)
