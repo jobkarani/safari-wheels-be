@@ -4,11 +4,10 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    user_type = serializers.CharField(source='profile.user_type')
-    Profile = ProfileSerializer()
+    # user_type = serializers.CharField(source='profile.user_type')
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'password', 'profile', 'user_type']
+        fields = ['id', 'email', 'username', 'password', 'profile']
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
