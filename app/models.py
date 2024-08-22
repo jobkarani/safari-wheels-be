@@ -27,9 +27,6 @@ class Profile(models.Model):
     full_names = models.CharField(max_length=100, null=True)
     email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=12, null=True)
-    id_number = models.CharField(max_length=20, null=True)
-    id_front_image = ImageField(manual_crop="", null=True)
-    id_back_image = ImageField(manual_crop="", null=True)
     location = models.CharField(max_length=30, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='Renter')
 

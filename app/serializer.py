@@ -22,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Profile
-        fields = ['id', 'full_names', 'user', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location', 'user_type']
+        fields = ['id', 'full_names', 'user', 'email', 'phone_number', 'location', 'user_type']
 
 class CarSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.user.username')  # Show owner's username in serialized data
