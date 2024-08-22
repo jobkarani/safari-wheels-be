@@ -25,9 +25,9 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_names = models.CharField(max_length=100, null=True)
-    email = models.EmailField(unique=True, null=True)
+    email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=12, null=True)
-    id_number = models.CharField(max_length=20, null=True, unique=True)
+    id_number = models.CharField(max_length=20, null=True)
     id_front_image = ImageField(manual_crop="", null=True)
     id_back_image = ImageField(manual_crop="", null=True)
     location = models.CharField(max_length=30, null=True)
@@ -38,7 +38,7 @@ class Profile(models.Model):
 
 class Car(models.Model):
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='cars', null=True)
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     image = ImageField(manual_crop="")
     description = models.TextField(max_length=4000)
     location = models.TextField(max_length=255, default='Nairobi')
