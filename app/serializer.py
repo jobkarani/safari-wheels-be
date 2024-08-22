@@ -4,10 +4,19 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # user_type = serializers.CharField(source='profile.user_type')
+    profile = serializers.PrimaryKeyRelatedField(read_only=True) 
     class Meta:
         model = User
         fields = ['id', 'email', 'username', 'password', 'profile']
+        
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data['email'],
+            username=validated_data['username'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
