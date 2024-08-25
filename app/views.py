@@ -29,6 +29,12 @@ def login(request):
 
 @api_view(['POST'])
 def signup(request):
+    # Check if username already exists
+    username = request.data.get('username')
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Continue with the regular signup process if username is not taken
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
