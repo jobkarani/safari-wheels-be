@@ -23,6 +23,7 @@ urlpatterns = [
    re_path('login', views.login),
    re_path('signup', views.signup),
    re_path('test_token', views.test_token),
+   path('check-username/', views.check_username_exists, name='check-username'),
    # path('profiles', ProfileListAPIView.as_view, name='profiles'),
    path('profile/save/', views.saveProfile, name='save_profile'),
    path('profile-check/', views.profile_check, name='profile-check'),

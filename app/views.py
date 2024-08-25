@@ -45,6 +45,17 @@ def signup(request):
         })
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def check_username_exists(request):
+    username = request.query_params.get('username', None)
+    if username is None:
+        return Response({"error": "Username parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    exists = User.objects.filter(username=username).exists()
+    if exists:
+        return Response({"username_exists": True}, status=status.HTTP_200_OK)
+    else:
+        return Response({"username_exists": False}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
