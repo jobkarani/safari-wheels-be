@@ -4,15 +4,25 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # user_type = serializers.CharField(source='profile.user_type')
+    profile = serializers.PrimaryKeyRelatedField(read_only=True) 
     class Meta:
         model = User
         fields = ['id', 'email', 'username', 'password', 'profile']
+        
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data['email'],
+            username=validated_data['username'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Profile
-        fields = ['id', 'full_names', 'user', 'email', 'phone_number', 'id_number', 'id_front_image', 'id_back_image', 'location', 'user_type']
+        fields = ['id', 'full_names', 'user', 'email', 'phone_number', 'location', 'user_type']
 
 class CarSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.user.username')  # Show owner's username in serialized data

@@ -63,7 +63,6 @@ def check_username_exists(request):
 def test_token(request):
     return Response(f"passed for {request.user.email}")
 
-
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -71,14 +70,16 @@ def saveProfile(request):
     user = request.user
     try:
         profile = Profile.objects.get(user=user)
-        serializer = ProfileSerializer(profile, data=request.data)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
     except Profile.DoesNotExist:
         serializer = ProfileSerializer(data=request.data)
 
     if serializer.is_valid():
-        profile = serializer.save(user=user)
+        # Remove the user from validated_data if it's in request.data
+        serializer.save(user=user)
         return Response({"profile": serializer.data})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
