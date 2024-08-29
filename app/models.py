@@ -25,7 +25,6 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_names = models.CharField(max_length=100, null=True)
-    email = models.EmailField(null=True)
     phone_number = models.CharField(max_length=12, null=True)
     location = models.CharField(max_length=30, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='Renter')
