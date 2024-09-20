@@ -132,7 +132,11 @@ DATABASES['default'].update(db_from_env)
 
 ALLOWED_HOSTS=['safari-wheels-be-production.up.railway.app','127.0.0.1', 'https://safari-wheels-be-production.up.railway.app/admin','http://localhost:4200', 'safariwheels.co.ke', 'www.safariwheels.co.ke']
 
-CSRF_TRUSTED_ORIGINS = ['https://safari-wheels-be-production.up.railway.app', 'https://safariwheels.co.ke', 'https://www.safariwheels.co.ke']
+CSRF_TRUSTED_ORIGINS = [
+    'https://safari-wheels-be-production.up.railway.app',
+    'https://safariwheels.co.ke',
+    'https://www.safariwheels.co.ke'
+]
 
 
 UPLOADCARE = {  
@@ -178,9 +182,8 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# Ensure these are present for proper login flow
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth backend
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -231,7 +234,12 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOWED_ORIGINS = [
+    'https://safari-wheels-be-production.up.railway.app',
+    'https://safariwheels.co.ke',
+    'https://www.safariwheels.co.ke',
+    'http://localhost:4200'
+]
 
 CORS_ALLOW_HEADERS = [
     "Access-Control-Allow-Origin",
