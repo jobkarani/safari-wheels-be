@@ -8,36 +8,15 @@ from .serializer import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
-import logging
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
-from django.http import JsonResponse
-from rest_framework import status
 
-logger = logging.getLogger(__name__)
-
-class GoogleLogin(SocialLoginView):
+class GoogleLogin(SocialLoginView): # if you want to use Authorization Code Grant, use this
     adapter_class = GoogleOAuth2Adapter
-
-    def post(self, request, *args, **kwargs):
-        try:
-            logger.info(f"Received Google token: {request.data.get('token')}")
-            response = super().post(request, *args, **kwargs)
-            
-            if response.status_code == 200:
-                logger.info(f"Google login successful: {response.data}")
-                return response
-            else:
-                logger.error(f"Google login failed: {response.data}")
-                return JsonResponse({
-                    "error": "Google login failed.",
-                    "details": response.data
-                }, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error(f"Error during Google login: {e}", exc_info=True)
-            return JsonResponse({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+    callback_url = "https://www.safariwheels.co.ke/"
+    client_class = OAuth2Client
+    
 @api_view(['POST'])
 def login(request):
     user = get_object_or_404(User, email=request.data['email'])
