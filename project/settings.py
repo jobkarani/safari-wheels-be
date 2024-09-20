@@ -113,28 +113,12 @@ DATABASES = {
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+# Your Google credentials
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'offline'},
-        'CLIENT_ID': '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com',
-        'SECRET': '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',
-    }
-}
-
-# EMAIL_BACKEND = 'simple_mail.backends.AsyncEmailBackend'
-# EMAIL_HOST = 'https://products-be-api-production.up.railway.app'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'healthylivingkenya254@gmail.com'
-# EMAIL_HOST_PASSWORD = '12345678jk'
-
+# Configure Django's Sites framework
+SITE_ID = 1
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
@@ -144,8 +128,6 @@ ALLOWED_HOSTS=['safari-wheels-be-production.up.railway.app','127.0.0.1', 'https:
 
 CSRF_TRUSTED_ORIGINS = ['https://safari-wheels-be-production.up.railway.app', 'https://safariwheels.co.ke', 'https://www.safariwheels.co.ke']
 
-# Configure Django's Sites framework
-SITE_ID = 1
 
 UPLOADCARE = {  
     'pub_key': config('pub_key'),
@@ -190,18 +172,14 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
+# Ensure these are present for proper login flow
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',  # Django's default auth backend
-    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth's auth backend
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
-# Configure Allauth settings
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
+# Optional settings
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
