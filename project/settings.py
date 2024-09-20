@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # Google provider for allauth
+    'allauth.socialaccount.providers.google',  # Ensure Google provider is installed
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'jazzmin',
@@ -113,9 +113,15 @@ DATABASES = {
     }
 }
 
-# Your Google credentials
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
 
 # Configure Django's Sites framework
 SITE_ID = 1
