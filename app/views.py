@@ -8,11 +8,28 @@ from .serializer import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from dj_rest_auth.registration.views import SocialLoginView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .utils import verify_google_token
 
-class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
+class GoogleLoginView(APIView):
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token')
+        if not token:
+            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Verify the Google JWT token using the utility function
+            user_info = verify_google_token(token)
+            user_email = user_info['email']
+            user_name = user_info['name']
+
+            # Process the user information, e.g., create or log in the user
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def login(request):
