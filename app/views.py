@@ -8,22 +8,20 @@ from .serializer import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.http import JsonResponse
-from allauth.socialaccount.models import SocialAccount
+import logging
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
-import logging
-logger = logging.getLogger(__name__)
+from django.http import JsonResponse
+from rest_framework import status
 
+logger = logging.getLogger(__name__)
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
     def post(self, request, *args, **kwargs):
         try:
-            logger.info(f"Received request data: {request.data}")
-
-            # Validate and process the Google token
+            logger.info(f"Received Google token: {request.data.get('token')}")
             response = super().post(request, *args, **kwargs)
             
             if response.status_code == 200:
@@ -38,7 +36,8 @@ class GoogleLogin(SocialLoginView):
         except Exception as e:
             logger.error(f"Error during Google login: {e}", exc_info=True)
             return JsonResponse({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+
 @api_view(['POST'])
 def login(request):
     user = get_object_or_404(User, email=request.data['email'])
