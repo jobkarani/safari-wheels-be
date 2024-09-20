@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  # Ensure Google provider is installed
+    'allauth.socialaccount.providers.google',
+    'rest_framework',
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'jazzmin',
@@ -54,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig', 
-    "rest_framework", 
     'cloudinary', 
     'simple_mail', 
     'drf_yasg',
@@ -113,18 +113,43 @@ DATABASES = {
     }
 }
 
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com',
+#             'secret': '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',
+#             'key': ''
+#         }
+#     }
+# }
+
+# Add the site ID for django-allauth
+SITE_ID = 1
+
+# Rest Framework Authentication Settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+# Google OAuth2 client credentials
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'APP': {
-            'client_id': '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
         }
     }
 }
 
-# Configure Django's Sites framework
-SITE_ID = 1
+# Redirect URL after successful login
+LOGIN_REDIRECT_URL = '/'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
@@ -161,12 +186,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
 
 from datetime import timedelta
 

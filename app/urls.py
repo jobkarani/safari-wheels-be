@@ -20,7 +20,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-   path('dj-rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
+   path('auth/google/', GoogleLogin.as_view(), name='google_login'),
    re_path('login', views.login),
    re_path('signup', views.signup),
    re_path('test_token', views.test_token),
