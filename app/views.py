@@ -15,33 +15,30 @@ from dj_rest_auth.registration.views import SocialLoginView
 import logging
 logger = logging.getLogger(__name__)
 
+
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
     def post(self, request, *args, **kwargs):
         try:
-            # This will automatically handle the Google token and authentication
+            logger.info(f"Received request data: {request.data}")
+
+            # Validate and process the Google token
             response = super().post(request, *args, **kwargs)
             
-            # Check if the user is authenticated
             if response.status_code == 200:
-                logger.info(f"Google login successful for user: {response.data}")
-                return JsonResponse({
-                    "access_token": response.data.get("access_token"),
-                    "refresh_token": response.data.get("refresh_token"),
-                    "user": response.data.get("user")
-                }, status=status.HTTP_200_OK)
+                logger.info(f"Google login successful: {response.data}")
+                return response
             else:
                 logger.error(f"Google login failed: {response.data}")
                 return JsonResponse({
                     "error": "Google login failed.",
                     "details": response.data
                 }, status=status.HTTP_400_BAD_REQUEST)
-
         except Exception as e:
-            logger.error(f"Error handling Google login: {e}")
+            logger.error(f"Error during Google login: {e}", exc_info=True)
             return JsonResponse({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        
 @api_view(['POST'])
 def login(request):
     user = get_object_or_404(User, email=request.data['email'])
