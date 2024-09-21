@@ -3,16 +3,15 @@ from google.auth.transport import requests
 
 def verify_google_token(token):
     try:
-        # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(token, requests.Request(), '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com')
+        # Specify the CLIENT_ID of the app that accesses the backend
+        CLIENT_ID = "798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com"
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
-        # ID token is valid, get user information from it
-        user_email = idinfo['email']
-        user_name = idinfo.get('name')
+        # If the token is valid, return user information
         return {
-            'email': user_email,
-            'name': user_name,
+            'email': idinfo['email'],
+            'name': idinfo.get('name', '')  # Optional field
         }
     except ValueError:
         # Invalid token
-        raise Exception("Invalid token")
+        raise ValueError("Invalid token")

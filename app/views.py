@@ -20,16 +20,42 @@ class GoogleLoginView(APIView):
             return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Verify the Google JWT token using the utility function
+            # Verify the Google token and get user info
             user_info = verify_google_token(token)
             user_email = user_info['email']
             user_name = user_info['name']
 
-            # Process the user information, e.g., create or log in the user
-            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+            # Generate a username (you can adjust this logic)
+            username = user_email.split('@')[0]
+
+            # Check if the user already exists in the database
+            user, created = User.objects.get_or_create(email=user_email, defaults={
+                'username': username,
+                'password': User.objects.make_random_password()  # Random password for Google login users
+            })
+
+            if created:
+                # If user was newly created, set a default password
+                user.set_password(User.objects.make_random_password())  # Or handle password creation differently
+                user.save()
+
+            # Create JWT tokens for the user
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'username': user.username,
+                    'password': 'N/A'  # Do not expose passwords
+                },
+                'message': 'Login successful'
+            }, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 def login(request):

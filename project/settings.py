@@ -113,16 +113,6 @@ DATABASES = {
     }
 }
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'APP': {
-#             'client_id': '798810994611-fh6tdd71d0imku20opk2pg2d70gurg4b.apps.googleusercontent.com',
-#             'secret': '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',
-#             'key': ''
-#         }
-#     }
-# }
-
 # Add the site ID for django-allauth
 SITE_ID = 1
 
