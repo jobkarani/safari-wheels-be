@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Profile
         fields = ['id', 'full_names', 'user', 'phone_number', 'location', 'user_type']

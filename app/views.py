@@ -114,21 +114,26 @@ def check_username_exists(request):
 def test_token(request):
     return Response(f"passed for {request.user.email}")
 
+
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def saveProfile(request):
-    user = request.user
+    user = request.user  # Get the authenticated user (Google auth user included)
+    
     try:
+        # Try to retrieve the profile of the authenticated user
         profile = Profile.objects.get(user=user)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)  # Update profile
     except Profile.DoesNotExist:
+        # If no profile exists, create a new one
         serializer = ProfileSerializer(data=request.data)
-
+    
     if serializer.is_valid():
-        # Remove the user from validated_data if it's in request.data
+        # Assign the authenticated user to the profile
         serializer.save(user=user)
-        return Response({"profile": serializer.data})
+        return Response({"profile": serializer.data}, status=status.HTTP_200_OK)
+    
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
