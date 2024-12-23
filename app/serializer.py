@@ -2,12 +2,20 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['id', 'full_names', 'phone_number', 'location', 'user_type']
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = serializers.PrimaryKeyRelatedField(read_only=True) 
+    profile = ProfileSerializer(read_only=True)  # Nesting ProfileSerializer
+    
     class Meta:
         model = User
         fields = ['id', 'email', 'username', 'password', 'profile']
+        extra_kwargs = {
+            'password': {'write_only': True}  # Ensure password is write-only
+        }
         
     def create(self, validated_data):
         user = User.objects.create(
@@ -16,14 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
+        # Optionally, create a profile if not automatically created
+        Profile.objects.create(user=user)
         return user
-
-class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    class Meta:
-        model = Profile
-        fields = ['id', 'full_names', 'user', 'phone_number', 'location', 'user_type']
-
+    
 class CarSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.user.username')  # Show owner's username in serialized data
 
