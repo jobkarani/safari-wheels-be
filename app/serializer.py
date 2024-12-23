@@ -24,7 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
-        # Optionally, create a profile if not automatically created
         Profile.objects.create(user=user)
         return user
     
